@@ -40,7 +40,7 @@ exports.login = catchAsync(async (req, res, next) => {
   );
 
   if (!admin || !isPasswordCorrect)
-    return next(new AppError('Incorrect Email or Password', 401));
+    return next(new AppError('Incorrect Phone or Password', 401));
 
   authController.sendLoginToken(admin, 200, res);
 });
