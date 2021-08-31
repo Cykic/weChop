@@ -55,6 +55,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.7",
     "morgan": "^1.10.0",
+    "twilio": "^3.67.1",
     "validator": "^13.6.0",
     "xss-clean": "^0.1.1"
   }
