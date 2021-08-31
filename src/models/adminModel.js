@@ -46,7 +46,16 @@ const adminSchema = mongoose.Schema(
     createdAt: {
       type: Date,
       default: Date.now()
-    }
+    },
+    verificationCode: {
+      type: String,
+      select: false
+    },
+    verified: {
+      type: Boolean,
+      default: false
+    },
+    verifiedAt: Date
   },
   { versionKey: false }
 );
