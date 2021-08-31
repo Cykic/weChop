@@ -55,7 +55,8 @@ const adminSchema = mongoose.Schema(
       type: Boolean,
       default: false
     },
-    verifiedAt: Date
+    verifiedAt: Date,
+    verificationExpires: Date
   },
   { versionKey: false }
 );
