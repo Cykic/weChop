@@ -13,33 +13,42 @@ exports.signup = catchAsync(async (req, res, next) => {
   const { name, phone, password, confirmPassword } = req.body;
   const message = `Your otp for Admin of weChop is ${otp.code} and it expires in ${process.env.OTP_EXPIRES_MINUTES} minutes`;
 
+  // signup function
+  const signup = async function(admin) {
+    admin.name = name;
+    admin.phone = phone;
+    admin.password = password;
+    admin.confirmPassword = confirmPassword;
+    admin.verificationCode = otp.hash;
+    admin.verificationExpires = expireTime;
+
+    await admin.save();
+    await sendSms(phone, message);
+
+    res.status(201).json({
+      status: 'success',
+      message: 'Your admin account has been created',
+      data: {
+        admin
+      }
+    });
+  };
+
   // Check if phone number has been used already & is verified
-  const isAdminVerified = await Admin.findOne({ phone, verified: true });
-  if (isAdminVerified)
+  const adminExist = await Admin.findOne({ phone });
+
+  // create new Admnin
+  if (!adminExist) {
+    const admin = new Admin();
+    signup(admin);
+  }
+
+  if (adminExist.verified)
     return next(
       new AppError('This phone belong to a verified admin, try another', 400)
     );
 
-  // Create new Admin
-  const admin = new Admin();
-
-  admin.name = name;
-  admin.phone = phone;
-  admin.password = password;
-  admin.confirmPassword = confirmPassword;
-  admin.verificationCode = otp.hash;
-  admin.verificationExpires = expireTime;
-
-  await admin.save();
-  await sendSms(phone, message);
-
-  res.status(201).json({
-    status: 'success',
-    message: 'Your admin account has been created',
-    data: {
-      admin
-    }
-  });
+  signup(adminExist);
 });
 
 exports.verify = catchAsync(async (req, res, next) => {
