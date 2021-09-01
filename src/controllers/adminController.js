@@ -5,6 +5,7 @@ const OTP = require('../../utils/OTP');
 const sendSms = require('../../utils/sendSms');
 
 const authController = require('./authController');
+const crudFactory = require('../factory/crudFactory');
 
 exports.signup = catchAsync(async (req, res, next) => {
   // initialisation
@@ -105,3 +106,5 @@ exports.login = catchAsync(async (req, res, next) => {
 
   authController.sendLoginToken(admin, 200, res);
 });
+
+exports.deleteAdmin = crudFactory.deleteOne(Admin);
