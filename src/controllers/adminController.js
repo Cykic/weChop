@@ -15,7 +15,7 @@ exports.signup = catchAsync(async (req, res, next) => {
 
   // signup function
   const signup = async function(admin) {
-    admin.name = name;
+    admin.name = name.trim();
     admin.phone = phone;
     admin.password = password;
     admin.confirmPassword = confirmPassword;
