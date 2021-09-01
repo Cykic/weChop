@@ -11,7 +11,6 @@ const adminSchema = mongoose.Schema(
     },
     phone: {
       type: String,
-      unique: true,
       required: [true, 'Please provide Phone Number'],
       minLength: [14, 'Incorrect phone number format, try +2349012345678'],
       maxLength: [14, 'Incorrect phone number format, try +2349012345678'],
@@ -35,7 +34,7 @@ const adminSchema = mongoose.Schema(
     },
     confirmPassword: {
       type: String,
-      required: [true, 'Please provide ConfirmPassword'],
+      required: [true, 'Please provide confirmPassword'],
       validate: {
         validator: function(value) {
           return value === this.password;

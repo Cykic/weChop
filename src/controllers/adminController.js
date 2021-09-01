@@ -7,12 +7,21 @@ const sendSms = require('../../utils/sendSms');
 const authController = require('./authController');
 
 exports.signup = catchAsync(async (req, res, next) => {
+  // initialisation
   const otp = OTP.generate();
-
   const expireTime = Date.now() + process.env.OTP_EXPIRES_MINUTES * 60000;
-  const admin = new Admin();
   const { name, phone, password, confirmPassword } = req.body;
   const message = `Your otp for Admin of weChop is ${otp.code} and it expires in ${process.env.OTP_EXPIRES_MINUTES} minutes`;
+
+  // Check if phone number has been used already & is verified
+  const isAdminVerified = await Admin.findOne({ phone, verified: true });
+  if (isAdminVerified)
+    return next(
+      new AppError('This phone belong to a verified admin, try another', 400)
+    );
+
+  // Create new Admin
+  const admin = new Admin();
 
   admin.name = name;
   admin.phone = phone;
