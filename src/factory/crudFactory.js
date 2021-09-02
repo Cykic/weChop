@@ -28,7 +28,7 @@ exports.getOne = (Model, popOptions) =>
 exports.getAll = Model =>
   catchAsync(async (req, res, next) => {
     let filter = {};
-    if (req.params.tourId) filter = { tour: req.params.tourId };
+    if (req.params.id) filter = { id: req.params.id };
     const features = new APIFeatures(Model.find(filter), req.query)
       .filter()
       .sort()
@@ -86,7 +86,12 @@ exports.upload = multer({
       cb(null, { fieldName: file.fieldname });
     },
     key: function(req, file, cb) {
-      cb(null, `${process.env.NODE_ENV}/menu/image-menu-${Date.now()}.jpeg`);
+      cb(
+        null,
+        `${process.env.NODE_ENV}/menu/image-menu-${
+          req.body.name
+        }-${Date.now()}.jpeg`
+      );
     }
   })
 });

@@ -76,6 +76,6 @@ adminSchema.methods.correctPassword = async function(password, inputPassword) {
   return correctPassword;
 };
 
-const Admin = mongoose.model('admin', adminSchema);
+const Admin = mongoose.model('Admin', adminSchema);
 
 module.exports = Admin;

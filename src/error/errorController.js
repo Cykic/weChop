@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const AppError = require('./appError');
 
 const handleCastErrorDB = err => {
@@ -5,6 +6,7 @@ const handleCastErrorDB = err => {
   return new AppError(message, 400);
 };
 
+// eslint-disable-next-line no-unused-vars
 const handleDuplicateFieldsDB = err => {
   // const value = err.message.match(/(["'])(\\?.)*?\1/)[0];
   const message = `Duplicate field value. Please use another value!`;

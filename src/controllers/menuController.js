@@ -11,7 +11,8 @@ exports.createMenu = catchAsync(async (req, res, next) => {
     description,
     images,
     category,
-    price
+    price,
+    uploadedBy: req.user.id
   });
 
   res.status(201).json({
