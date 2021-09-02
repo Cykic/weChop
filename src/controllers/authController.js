@@ -25,7 +25,8 @@ exports.sendLoginToken = (user, statuscode, res) => {
 
   res.status(statuscode).json({
     status: 'success',
-    message: 'Successfully Logged in'
+    message: 'Successfully Logged in',
+    token
   });
 };
 
