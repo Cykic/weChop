@@ -10,16 +10,16 @@ const generateToken = user =>
     expiresIn: process.env.JWT_EXPIRES_IN
   });
 
-exports.sendLoginToken = (user, statuscode, res) => {
+exports.sendLoginToken = (user, statuscode, req, res) => {
   const token = generateToken(user);
   const cookieOption = {
     expires: new Date(
       Date.now() + process.env.JWT_EXPIRES * 24 * 60 * 60 * 1000
     ),
-    httpOnly: true
+    httpOnly: true,
+    secure: req.secure || req.headers['x-forwarded-proto'] === 'https'
   };
 
-  if (process.env.NODE_ENV === 'production') cookieOption.secure = true;
   // cookie
   res.cookie('accessToken', token, cookieOption);
 

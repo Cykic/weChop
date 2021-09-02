@@ -105,7 +105,7 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!admin || !isPasswordCorrect)
     return next(new AppError('Incorrect Phone or Password', 401));
 
-  authController.sendLoginToken(admin, 200, res);
+  authController.sendLoginToken(admin, 200, req, res);
 });
 
 exports.deleteAdmin = crudFactory.deleteOne(Admin);
