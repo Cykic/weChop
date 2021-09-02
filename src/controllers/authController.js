@@ -21,7 +21,7 @@ exports.sendLoginToken = (user, statuscode, res) => {
 
   if (process.env.NODE_ENV === 'production') cookieOption.secure = true;
   // cookie
-  res.cookie('accessToken', token, cookieOption);
+  res.cookie('jwt', token, cookieOption);
 
   res.status(statuscode).json({
     status: 'success',
@@ -34,7 +34,6 @@ exports.sendLoginToken = (user, statuscode, res) => {
 exports.protectedAdmin = catchAsync(async (req, res, next) => {
   // Get token
   let token;
-  if (req.cookies) token = req.cookies.accessToken;
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')

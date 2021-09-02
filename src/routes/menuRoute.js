@@ -3,7 +3,9 @@ const menuController = require('../controllers/menuController');
 const authController = require('../controllers/authController');
 
 const router = express.Router();
+
 router.use(authController.protectedAdmin);
+
 router
   .route('/')
   .get(menuController.getAllMenu)
