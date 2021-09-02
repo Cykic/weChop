@@ -89,7 +89,7 @@ exports.upload = multer({
       cb(
         null,
         `${process.env.NODE_ENV}/menu/image-menu-${
-          req.body.name
+          req.user.id
         }-${Date.now()}.jpeg`
       );
     }
