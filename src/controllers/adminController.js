@@ -41,7 +41,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   // create new Admnin
   if (!adminExist) {
     const admin = new Admin();
-    signup(admin);
+    return signup(admin);
   }
 
   if (adminExist.verified)
@@ -77,6 +77,7 @@ exports.verify = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: 'success',
+    message: 'verified successfully',
     data: { admin }
   });
 });

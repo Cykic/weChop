@@ -1,4 +1,9 @@
 const jwt = require('jsonwebtoken');
+const { promisify } = require('util');
+
+const catchAsync = require('../error/catchAsync');
+const AppError = require('../error/appError');
+const Admin = require('../models/adminModel');
 
 const generateToken = user =>
   jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
@@ -16,10 +21,52 @@ exports.sendLoginToken = (user, statuscode, res) => {
 
   if (process.env.NODE_ENV === 'production') cookieOption.secure = true;
   // cookie
-  res.cookie('jwt', token, cookieOption);
+  res.cookie('accessToken', token, cookieOption);
 
   res.status(statuscode).json({
     status: 'success',
     token
   });
+};
+
+// PROTECTED ROUTES
+
+exports.protectedAdmin = catchAsync(async (req, res, next) => {
+  // Get token
+  let token;
+  if (req.cookies) token = req.cookies.accessToken;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+
+  if (!token)
+    return next(
+      new AppError('You are not Logged in, Login to get access', 401)
+    );
+  // Verify token
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  const freshUser = await Admin.findById(decoded.id);
+  if (!freshUser) {
+    return next(new AppError('Login as Admin to get authorization', 403));
+  }
+  // GRANT ACCESS TO THE PROTECTED ROUTE
+  req.user = freshUser;
+  next();
+});
+
+// AUTHORIZATION
+
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    // Check if the user role is part of the role that hass access to the next middleware
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError('You do not have permission for this route', 403)
+      );
+    }
+    next();
+  };
 };

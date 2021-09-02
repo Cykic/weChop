@@ -1,3 +1,7 @@
+const aws = require('aws-sdk');
+const multer = require('multer');
+const multerS3 = require('multer-s3');
+
 const catchAsync = require('../error/catchAsync');
 const AppError = require('../error/appError');
 const APIFeatures = require('../../utils/apiFeatures');
@@ -37,10 +41,23 @@ exports.getAll = Model =>
     res.status(200).json({
       status: 'success',
       results: doc.length,
-      data: { data: doc }
+      data: doc
     });
   });
+// UPDATE ONE
+exports.updateOne = Model => {
+  return catchAsync(async (req, res, next) => {
+    const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
+      new: true
+    });
 
+    res.status(200).json({
+      status: 'success',
+      message: 'Successfuly updated',
+      data: doc
+    });
+  });
+};
 // DELETE ONE
 exports.deleteOne = Model => {
   return catchAsync(async (req, res, next) => {
@@ -53,3 +70,23 @@ exports.deleteOne = Model => {
     res.status(204).json({ status: 'success', data: null });
   });
 };
+
+const s3 = new aws.S3({
+  // s3-bucket image upload
+  accessKeyId: process.env.S3_ACCESS_KEY,
+  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+  region: process.env.S3_BUCKET_REGION
+});
+
+exports.upload = multer({
+  storage: multerS3({
+    s3,
+    bucket: process.env.BUCKET_NAME,
+    metadata: function(req, file, cb) {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key: function(req, file, cb) {
+      cb(null, `${process.env.NODE_ENV}/menu/image-menu-${Date.now()}.jpeg`);
+    }
+  })
+});
