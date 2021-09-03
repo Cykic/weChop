@@ -22,11 +22,12 @@ exports.sendLoginToken = (user, statuscode, req, res) => {
 
   // cookie
   // res.cookie('accessToken', token, cookieOption);
-
+  const { name, phone, role } = user;
   res.status(statuscode).json({
     status: 'success',
     message: 'Successfully Logged in',
-    token
+    token,
+    user: { name, phone, role }
   });
 };
 
